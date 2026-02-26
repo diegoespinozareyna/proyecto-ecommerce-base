@@ -3,6 +3,8 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import Swal from 'sweetalert2'
 
+const API = "https://f6280e940fffd701.mokky.dev"
+
 export const useAppStore = create(
     persist(
         (set, get) => ({
@@ -10,24 +12,19 @@ export const useAppStore = create(
             token: null,
             isLoading: false,
             error: null,
+            cart: [],
             login: async (email, password) => {
                 try {
                     set({
                         isLoading: true
                     })
-                    const respuesta = await axios.post("https://api.escuelajs.co/api/v1/auth/login", {
-                        email: email,
-                        password: password
-                    })
-                    if (respuesta.status === 201) {
-                        console.log("respuesta.data: ", respuesta.data)
-                        const profile = await axios.get("https://api.escuelajs.co/api/v1/auth/profile", {
-                            headers: {
-                                Authorization: `Bearer ${respuesta.data.access_token}`
-                            }
-                        })
+                    const respuesta = await axios.get(`${API}/users?email=${email}&password=${password}`)
+
+                    console.log("respuesta: ", respuesta)
+
+                    if (respuesta?.data?.length > 0) {
                         set({
-                            user: profile.data
+                            user: respuesta?.data?.[0]
                         })
                     }
                 }
@@ -63,7 +60,38 @@ export const useAppStore = create(
                     return hasRole
                 }
                 return currentRole.role === roles
-            }
+            },
+            addToCart: (product) => {
+                set((state) => {
+                    const existingItem = state.cart.find(item => item.product.id == product.id)
+                    if (existingItem) {
+                        return {
+                            cart: state.cart.map(item =>
+                                item.product.id == product.id ?
+                                    { ...item, quantity: item.quantity + 1 }
+                                    :
+                                    item
+                            )
+                        }
+                    }
+                    else {
+                        return {
+                            cart: [...state.cart, { product, quantity: 1 }]
+                        }
+                    }
+                })
+            },
+            updateQuantity: (productId, newQuantity) => set((state) => ({
+                cart: state.cart.map(item =>
+                    item.product.id == productId ?
+                        { ...item, quantity: Math.max(1, newQuantity) }
+                        :
+                        item
+                )
+            })),
+            removeFromCart: (productId) => set((state) => ({
+                cart: state.cart.filter(item => item.product.id !== productId)
+            }))
         }),
         {
             name: "info-profile",

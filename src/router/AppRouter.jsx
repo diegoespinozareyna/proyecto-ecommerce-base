@@ -8,6 +8,7 @@ import Profile from "../components/Profile"
 import Navbar from "../components/layout/Navbar"
 import PanelAdmin from "../components/panelAdmin/PanelAdmin"
 import Unauthorized from "../components/Unauthorized"
+import Cart from "../components/Cart"
 
 const AppRouter = () => {
 
@@ -53,6 +54,16 @@ const AppRouter = () => {
                                     <PanelAdmin />
                                     :
                                     <Unauthorized />
+                        }
+                    />
+
+                    <Route
+                        path="/cart"
+                        element={
+                            user === null ?
+                                <Navigate to="/login" />
+                                :
+                                <Cart />
                         }
                     />
 
