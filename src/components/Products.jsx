@@ -68,7 +68,7 @@ const Products = () => {
                                 <img
                                     src={item.images[0]}
                                     alt="prodcut"
-                                    className="w-full h-[95] object-cover"
+                                    className="w-full h-75 object-cover"
                                 />
                                 <div className="p-3">
                                     <div className="flex justify-start gap-5 items-center">
