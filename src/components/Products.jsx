@@ -64,7 +64,7 @@ const Products = () => {
                 {
                     products.map((item, index) => {
                         return (
-                            <div key={index} className="bg-white shadow-lg rounded-lg max-w-75 h-full overflow-hidden pb-3">
+                            <div key={index} className="bg-white shadow-lg rounded-lg max-w-75 h-112 overflow-hidden pb-3">
                                 <img
                                     src={item.images[0]}
                                     alt="prodcut"

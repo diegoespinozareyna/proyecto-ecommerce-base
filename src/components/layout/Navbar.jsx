@@ -21,6 +21,11 @@ const Navbar = () => {
                             Productos
                         </Link>
                     </div>
+                    <div>
+                        <Link to="/miscompras" className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-lg text-xs cursor-pointer">
+                            Mis Compras
+                        </Link>
+                    </div>
 
                     {
                         hasRole(["admin", "editor", "manager", "finance", "RRHH"]) &&

@@ -27,7 +27,7 @@ const Cart = () => {
                     "userEmail": user.email,
                     "productId": cart?.[i]?.product?.id,
                     "productTitle": cart?.[i]?.product?.title,
-                    "productImage": cart?.[i]?.product?.title?.images?.[i],
+                    "productImage": cart?.[i]?.product?.images?.[0],
                     "price": cart?.[i]?.product?.price,
                     "date": new Date().toISOString(),
                 }

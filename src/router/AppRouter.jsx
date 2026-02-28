@@ -9,6 +9,7 @@ import Navbar from "../components/layout/Navbar"
 import PanelAdmin from "../components/panelAdmin/PanelAdmin"
 import Unauthorized from "../components/Unauthorized"
 import Cart from "../components/Cart"
+import MyPurchases from "../components/MyPurchases/page"
 
 const AppRouter = () => {
 
@@ -41,6 +42,16 @@ const AppRouter = () => {
                                 <Navigate to="/login" />
                                 :
                                 <Products />
+                        }
+                    />
+
+                    <Route
+                        path="/miscompras"
+                        element={
+                            user === null ?
+                                <Navigate to="/login" />
+                                :
+                                <MyPurchases />
                         }
                     />
 
