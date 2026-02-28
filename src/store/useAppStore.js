@@ -3,8 +3,6 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import Swal from 'sweetalert2'
 
-const API = "https://f6280e940fffd701.mokky.dev"
-
 export const useAppStore = create(
     persist(
         (set, get) => ({
@@ -13,12 +11,13 @@ export const useAppStore = create(
             isLoading: false,
             error: null,
             cart: [],
+            apiUrl: "https://f6280e940fffd701.mokky.dev",
             login: async (email, password) => {
                 try {
                     set({
                         isLoading: true
                     })
-                    const respuesta = await axios.get(`${API}/users?email=${email}&password=${password}`)
+                    const respuesta = await axios.get(`${get().apiUrl}/users?email=${email}&password=${password}`)
 
                     console.log("respuesta: ", respuesta)
 
@@ -65,16 +64,37 @@ export const useAppStore = create(
                 set((state) => {
                     const existingItem = state.cart.find(item => item.product.id == product.id)
                     if (existingItem) {
+                        // return {
+                        //     cart: state.cart.map(item =>
+                        //         item.product.id == product.id ?
+                        //             { ...item, quantity: item.quantity + 1 }
+                        //             :
+                        //             item
+                        //     )
+                        // }
+                        Swal.fire({
+                            title: "Ya tienes este producto en el carrito",
+                            icon: "warning",
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true
+                        })
                         return {
-                            cart: state.cart.map(item =>
-                                item.product.id == product.id ?
-                                    { ...item, quantity: item.quantity + 1 }
-                                    :
-                                    item
-                            )
+                            cart: [...state.cart]
                         }
                     }
                     else {
+                        Swal.fire({
+                            title: "Agregado al carrito",
+                            icon: "success",
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true
+                        })
                         return {
                             cart: [...state.cart, { product, quantity: 1 }]
                         }
@@ -91,7 +111,12 @@ export const useAppStore = create(
             })),
             removeFromCart: (productId) => set((state) => ({
                 cart: state.cart.filter(item => item.product.id !== productId)
-            }))
+            })),
+            clearCart: () => set(
+                {
+                    cart: []
+                }
+            )
         }),
         {
             name: "info-profile",

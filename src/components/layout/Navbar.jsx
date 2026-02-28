@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 const Navbar = () => {
 
-    const { user, logout, hasRole, cart } = useAppStore()
+    const { user, logout, hasRole, cart, clearCart } = useAppStore()
 
     return (
         <>
@@ -59,7 +59,10 @@ const Navbar = () => {
                             </div>
 
                             <LogOut
-                                onClick={logout}
+                                onClick={() => {
+                                    logout()
+                                    clearCart()
+                                }}
                                 className="w-10 h-10 text-slate-600 hover:text-slate-400 cursor-pointer bg-slate-800 p-2 rounded-md"
                             />
                         </div>

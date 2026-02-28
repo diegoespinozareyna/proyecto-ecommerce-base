@@ -1,17 +1,64 @@
 import { Activity, CreditCard, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useAppStore } from "../store/useAppStore"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const Cart = () => {
 
-    const { cart, updateQuantity, removeFromCart } = useAppStore()
+    const cambiarPagina = useNavigate()
+
+    const { cart, updateQuantity, removeFromCart, apiUrl, user, clearCart } = useAppStore()
 
     const [isCheckingOut, setIsCheckingOut] = useState(false)
 
     const totalAmount = cart.reduce((acc, item) => {
         return acc + (item.product.price * item.quantity)
     }, 0)
+
+    const handleCheckout = async () => {
+        try {
+            setIsCheckingOut(true)
+
+            for (let i = 0; i < cart.length; i++) {
+                const json = {
+                    "userId": user.id,
+                    "userEmail": user.email,
+                    "productId": cart?.[i]?.product?.id,
+                    "productTitle": cart?.[i]?.product?.title,
+                    "productImage": cart?.[i]?.product?.title?.images?.[i],
+                    "price": cart?.[i]?.product?.price,
+                    "date": new Date().toISOString(),
+                }
+                const res = await axios.post(`${apiUrl}/orders`, json)
+                console.log("res: ", res)
+                if (res?.status !== 201) {
+                    break
+                }
+            }
+            clearCart()
+            Swal.fire({
+                title: 'Pago exitoso',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            })
+            cambiarPagina("/products")
+        }
+        catch (error) {
+            console.log("error: ", error)
+            Swal.fire({
+                title: 'Error',
+                text: "Hubo un error al momento de procesar el pago",
+                icon: 'error',
+            })
+        }
+        finally {
+            setIsCheckingOut(false)
+        }
+    }
 
     if (cart.length === 0) {
         return (
@@ -47,7 +94,7 @@ const Cart = () => {
 
                                 <div className="flex grow text-center sm:text-left">
                                     <h3 className="font-bold text-slate-800 text-lg mb-1">{p.title}</h3>
-                                    <span className="text-indigo-600 font-black">${p.price} <span className="text-slate-400 font-normal text-sm">c/u</span></span>
+                                    <span className="text-indigo-600 font-black">S/. {p.price} <span className="text-slate-400 font-normal text-sm">c/u</span></span>
                                 </div>
 
                                 <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
@@ -67,7 +114,7 @@ const Cart = () => {
                                 </div>
 
                                 <div className="font-black text-slate-800 text-lg min-w-20 sm:text-right text-center">
-                                    ${p.price * item.quantity}
+                                    S/. {p.price * item.quantity}
                                 </div>
 
                                 <button
@@ -104,9 +151,9 @@ const Cart = () => {
                     </div>
 
                     <button
-                        // onClick={handleCheckout}
+                        onClick={handleCheckout}
                         disabled={isCheckingOut}
-                        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex justify-center items-center gap-2 text-lg"
+                        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex justify-center items-center gap-2 text-lg cursor-pointer"
                     >
                         {isCheckingOut ? <Activity className="animate-spin" /> : <><CreditCard /> Proceder al Pago</>}
                     </button>
