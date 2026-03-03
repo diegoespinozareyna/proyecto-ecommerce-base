@@ -1,9 +1,9 @@
 import axios from "axios"
 import { useAppStore } from "../../store/useAppStore"
 import { useEffect, useState } from "react"
-import TableGeneral from "../TableGeneral"
 import { Activity, DollarSign, ShieldAlert } from "lucide-react"
 import Swal from "sweetalert2"
+import TableGeneral from "../../components/TableGeneral"
 
 const PanelAdmin = () => {
 

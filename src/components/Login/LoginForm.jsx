@@ -1,32 +1,6 @@
-import { Activity } from "lucide-react";
-import { use, useEffect, useState } from "react";
-import axios from "axios";
-import { useAppStore } from "../store/useAppStore";
-import { useNavigate } from "react-router-dom";
+import { Activity } from "lucide-react"
 
-const Login = () => {
-
-    const navigate = useNavigate()
-
-    const { login, user, isLoading } = useAppStore();
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("el email es: ", email);
-        console.log("el password es: ", password);
-
-        await login(email, password);
-
-    }
-
-    useEffect(() => {
-        if (user !== null) {
-            navigate("/products")
-        }
-    }, [user])
+const LoginForm = ({ handleSubmit, email, setEmail, password, setPassword, isLoading }) => {
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -81,4 +55,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default LoginForm
