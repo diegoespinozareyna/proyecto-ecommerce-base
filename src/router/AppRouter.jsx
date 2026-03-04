@@ -32,7 +32,12 @@ const AppRouter = () => {
 
                     <Route
                         path="/profile"
-                        element={<Profile />}
+                        element={
+                            user === null ?
+                                <Navigate to="/login" />
+                                :
+                                <Profile />
+                        }
                     />
 
                     <Route

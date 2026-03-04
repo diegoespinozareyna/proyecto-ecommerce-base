@@ -58,10 +58,12 @@ const Navbar = () => {
                                 }
                             </Link>
 
-                            <div>
+                            <Link
+                                to="/profile"
+                            >
                                 <h2 className="text-lg text-white text-right">{user?.name}</h2>
                                 <h3 className="text-xs text-gray-400 text-right">{user?.role}</h3>
-                            </div>
+                            </Link>
 
                             <LogOut
                                 onClick={() => {

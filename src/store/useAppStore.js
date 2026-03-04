@@ -60,6 +60,9 @@ export const useAppStore = create(
                 }
                 return currentRole.role === roles
             },
+            updateUser: (newDataUser) => set((state) => ({
+                user: { ...state.user, ...newDataUser }
+            })),
             addToCart: (product) => {
                 set((state) => {
                     const existingItem = state.cart.find(item => item.product.id == product.id)
